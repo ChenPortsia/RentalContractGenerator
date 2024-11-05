@@ -1,6 +1,4 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 from time import sleep
 from stqdm import stqdm
 
@@ -94,7 +92,6 @@ return_painted = expander.checkbox("החזרה של דירה צבועה")
 pats_not_allowed = expander.checkbox("איסור על בעלי חיים")
 if expander.checkbox("תקופת התראה מוקדמת"):
     prior_notice = expander.number_input("תקופת התראה מוקדמת", 1, 12)
-
 
 if st.button('צור חוזה'):
   st.write('טוען...')
