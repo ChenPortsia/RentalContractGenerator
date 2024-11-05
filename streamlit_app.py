@@ -1,11 +1,102 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
 
-st.title('My first app')
+st.markdown("<h1 style='text-align: right;'>מחולל חוזי שכירות</h1>", unsafe_allow_html=True)
 
-st.write("Here's our first attempt at using data to create a table:")
-st.write(pd.DataFrame({
-    'first column': [1, 2, 3, 4],
-    'second column': [10, 20, 30, 40]
-}))
+# Landlord details:
+expander = st.expander("פרטי משכיר")
+l, r = expander.columns(2)
+r.markdown("<div style='text-align: right;'>שם מלא</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>ת\"ז</div>", unsafe_allow_html=True)
+r.text_input("שם מלא", key="landlord_name", label_visibility="hidden")
+l.text_input("ת\"ז", key="landlord_id", label_visibility="hidden")
 
+r.markdown("<div style='text-align: right;'>טלפון נייד</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>אימייל</div>", unsafe_allow_html=True)
+r.text_input("טלפון נייד", key="landlord_phone", label_visibility="hidden")
+l.text_input("אימייל", key="landlord_email", label_visibility="hidden")
+r.markdown("<div style='text-align: right;'>יישוב</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>רחוב</div>", unsafe_allow_html=True)
+r.text_input("יישוב", key="landlord_city", label_visibility="hidden")
+l.text_input("רחוב", key="landlord_street", label_visibility="hidden")
+
+expander = st.expander("פרטי שוכר")
+l, r = expander.columns(2)
+r.markdown("<div style='text-align: right;'>שם מלא</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>ת\"ז</div>", unsafe_allow_html=True)
+r.text_input("שם מלא", key="tenant_name", label_visibility="hidden")
+l.text_input("ת\"ז", key="tenant_id", label_visibility="hidden")
+r.markdown("<div style='text-align: right;'>טלפון נייד</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>אימייל</div>", unsafe_allow_html=True)
+r.text_input("טלפון נייד", key="tenant_phone", label_visibility="hidden")
+l.text_input("אימייל", key="tenant_email", label_visibility="hidden")
+
+expander = st.expander("פרטי הנכס")
+l, r = expander.columns(2)
+r.markdown("<div style='text-align: right;'>יישוב</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>רחוב</div>", unsafe_allow_html=True)
+r.text_input("יישוב", key="prop_city", label_visibility="hidden")
+l.text_input("רחוב", key="prop_street", label_visibility="hidden")
+a, b, c, d, e = expander.columns(5)
+a.markdown("<div style='text-align: right;'>מספר בית</div>", unsafe_allow_html=True)
+b.markdown("<div style='text-align: right;'>מספר דירה</div>", unsafe_allow_html=True)
+c.markdown("<div style='text-align: right;'>מספר חדרים</div>", unsafe_allow_html=True)
+d.markdown("<div style='text-align: right;'>קומה</div>", unsafe_allow_html=True)
+e.markdown("<div style='text-align: right;'>מ\"ר הנכס</div>", unsafe_allow_html=True)
+a.text_input("מספר בית", key="prop_num", label_visibility="hidden")
+b.text_input("מספר דירה", key="prop_apt_num", label_visibility="hidden")
+c.text_input("מספר חדרים", key="prop_rooms", label_visibility="hidden")
+d.text_input("קומה", key="prop_level", label_visibility="hidden")
+e.text_input("מ\"ר הנכס", key="prop_srm", label_visibility="hidden")
+
+expander = st.expander("פרטי ההסכם")
+a, b, c = expander.columns(3)
+a.markdown("<div style='text-align: right;'>תחילת תקופת שכירות</div>", unsafe_allow_html=True)
+b.markdown("<div style='text-align: right;'>סיום השכירות</div>", unsafe_allow_html=True)
+c.markdown("<div style='text-align: right;'>תקופת שכירות</div>", unsafe_allow_html=True)
+a.date_input("תחילת תקופת שכירות", key="rental_start_date", label_visibility="hidden")
+b.date_input("סיום השכירות", key="rental_end_date", label_visibility="hidden")
+rental_period = c.number_input("תקופת שכירות", 1, 12)
+a.markdown("<div style='text-align: right;'>דמי שכירות</div>", unsafe_allow_html=True)
+b.markdown("<div style='text-align: right;'>מועד התשלום</div>", unsafe_allow_html=True)
+c.markdown("<div style='text-align: right;'>אופן התשלום</div>", unsafe_allow_html=True)
+rental = a.number_input("דמי שכירות", 1, 1000000)
+rental_date = b.number_input("מועד התשלום", 1, 31)
+rental_method = c.selectbox('אופן התשלום',('המתאה', 'העברה בנקאית', 'מזומן'))
+
+expander = st.expander("בטחונות")
+a, b = expander.columns(2)
+a.markdown("<div style='text-align: right;'>קנס יומי עבור איחור בפינוי דירה</div>", unsafe_allow_html=True)
+b.markdown("<div style='text-align: right;'>גובהה צ’ק ביטחון</div>", unsafe_allow_html=True)
+a.number_input("קנס יומי עבור איחור בפינוי דירה", key="sec_daily_violance_fee", label_visibility="hidden")
+b.number_input("גובהה צ’ק ביטחון", key="sec_check", label_visibility="hidden")
+
+expander = st.expander("פרטי ערב")
+l, r = expander.columns(2)
+r.markdown("<div style='text-align: right;'>שם מלא</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>ת\"ז</div>", unsafe_allow_html=True)
+r.text_input("שם מלא", key="bail_name", label_visibility="hidden")
+l.text_input("ת\"ז", key="bail_id", label_visibility="hidden")
+r.markdown("<div style='text-align: right;'>טלפון נייד</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>אימייל</div>", unsafe_allow_html=True)
+r.text_input("טלפון נייד", key="bail_phone", label_visibility="hidden")
+l.text_input("אימייל", key="bail_email", label_visibility="hidden")
+r.markdown("<div style='text-align: right;'>יישוב</div>", unsafe_allow_html=True)
+l.markdown("<div style='text-align: right;'>רחוב</div>", unsafe_allow_html=True)
+r.text_input("יישוב", key="bail_city", label_visibility="hidden")
+l.text_input("רחוב", key="bail_street", label_visibility="hidden")
+
+expander = st.expander("תנאים נוספים")
+return_painted = expander.checkbox("החזרה של דירה צבועה")
+pats_not_allowed = expander.checkbox("איסור על בעלי חיים")
+if expander.checkbox("תקופת התראה מוקדמת"):
+    prior_notice = expander.number_input("תקופת התראה מוקדמת", 1, 12)
+
+from time import sleep
+from stqdm import stqdm
+
+if st.button('צור חוזה'):
+  st.write('טוען...')
+  for _ in stqdm(range(10)):
+    sleep(0.5)
