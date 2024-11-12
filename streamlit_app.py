@@ -1,9 +1,10 @@
 import streamlit as st
 from time import sleep
 from stqdm import stqdm
+import pandas as pd
 
 st.markdown("<h1 style='text-align: right;'>מחולל חוזי שכירות</h1>", unsafe_allow_html=True)
-
+st.markdown("<h2 style='text-align: right;'>הכנס פרטים כדי ליצור חוזה</h2>", unsafe_allow_html=True)
 # Landlord details:
 expander = st.expander("פרטי משכיר")
 l, r = expander.columns(2)
@@ -63,7 +64,7 @@ b.markdown("<div style='text-align: right;'>מועד התשלום</div>", unsafe
 c.markdown("<div style='text-align: right;'>אופן התשלום</div>", unsafe_allow_html=True)
 rental = a.number_input("דמי שכירות", 1, 1000000)
 rental_date = b.number_input("מועד התשלום", 1, 31)
-rental_method = c.selectbox('אופן התשלום',('המתאה', 'העברה בנקאית', 'מזומן'))
+rental_method = c.selectbox('אופן התשלום',('המחאה', 'העברה בנקאית', 'מזומן'))
 
 expander = st.expander("בטחונות")
 a, b = expander.columns(2)
@@ -88,12 +89,62 @@ r.text_input("יישוב", key="bail_city", label_visibility="hidden")
 l.text_input("רחוב", key="bail_street", label_visibility="hidden")
 
 expander = st.expander("תנאים נוספים")
-return_painted = expander.checkbox("החזרה של דירה צבועה")
+return_painted = expander.checkbox("החזרת דירה צבועה")
 pats_not_allowed = expander.checkbox("איסור על בעלי חיים")
 if expander.checkbox("תקופת התראה מוקדמת"):
     prior_notice = expander.number_input("תקופת התראה מוקדמת", 1, 12)
+if expander.checkbox("אחר"):
+    expander.markdown("<div style='text-align: right;'>:כתוב/י בצורה מטומצטת וברורה מה הסעיך הנוסף שתרצי/ה להוסיף</div>", unsafe_allow_html=True)
+    expander.text_area("אחר", key="other", label_visibility="hidden")
+
+# Load text from contract_form.txt
+
+@st.cache_data
+def populate_in_contract_form():
+  with open('contract_form.txt', 'r', encoding='utf-8') as f:
+    contract_form = f.read().format(
+        landlord_name=st.session_state.landlord_name,
+        landlord_id=st.session_state.landlord_id,
+        landlord_phone=st.session_state.landlord_phone,
+        landlord_email=st.session_state.landlord_email,
+        landlord_city=st.session_state.landlord_city,
+        landlord_street=st.session_state.landlord_street,
+        tenant_name=st.session_state.tenant_name,
+        tenant_id=st.session_state.tenant_id,
+        tenant_phone=st.session_state.tenant_phone,
+        tenant_email=st.session_state.tenant_email,
+        prop_city=st.session_state.prop_city,
+        prop_street=st.session_state.prop_street,
+        prop_num=st.session_state.prop_num,
+        prop_apt_num=st.session_state.prop_apt_num,
+        prop_rooms=st.session_state.prop_rooms,
+        prop_level=st.session_state.prop_level,
+        prop_srm=st.session_state.prop_srm,
+        rental_start_date=st.session_state.rental_start_date,
+        rental_end_date=st.session_state.rental_end_date,
+        rental_period=rental_period,
+        rental=rental,
+        rental_date=rental_date,
+        rental_method=rental_method,
+        sec_daily_violance_fee=st.session_state.sec_daily_violance_fee,
+        sec_check=st.session_state.sec_check,
+        bail_name=st.session_state.bail_name,
+        bail_id=st.session_state.bail_id,
+        bail_phone=st.session_state.bail_phone,
+        bail_email=st.session_state.bail_email,
+        bail_city=st.session_state.bail_city,
+        bail_street=st.session_state.bail_street
+    )
+  return contract_form
+
+contract = populate_in_contract_form()
 
 if st.button('צור חוזה'):
-  st.write('טוען...')
-  for _ in stqdm(range(10)):
-    sleep(0.5)
+  # st.write('טוען...')
+  # for _ in stqdm(range(10)):
+  #   sleep(0.5)
+  st.write(contract)
+
+
+
+
